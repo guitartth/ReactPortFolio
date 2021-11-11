@@ -5,7 +5,7 @@ function Content() {
     
     return (
         <main>
-            <CardGame />
+          
 
         </main>
     )
