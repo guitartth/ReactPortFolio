@@ -5,6 +5,8 @@ var newDeck = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=6"; /
 var cardsLeft; // cards remaining in 6 decks
 var playerTotal; // holds player hand score
 var dealerTotal; // holds dealer hand score
+var ss = window.sessionStorage;
+ss.setItem('dT', 0);
 
 // full blackjack game
 const CardGame = () => {
@@ -19,24 +21,23 @@ const CardGame = () => {
 
     // gives another card to player
     const handleHit = () => {
-        console.log("Player Total Before Hit: " + playerTotal);
         if(playerTotal < 21 && playerCardCount < 5){
             dealPlayerCard();
+        }
+        if (playerCardCount == 5){
+            handleStay();
         }
     }
 
     const dealerPlays = () => {
-        dealDealerCard();
-        setTimeout(() => {return}, 1000);
-        dealDealerCard();
-        setTimeout(() => {return}, 1000);
-        dealDealerCard();
+        dealDealerCard().then();
+        dealDealerCard().then();
+        dealDealerCard().then();
     }
 
     // ends player turn and begins dealer turn
     const handleStay = () => {
         showDealerCard();
-        setTimeout(() => {return}, 1000);
         dealerPlays();
 
         if(playerTotal > dealerTotal || dealerTotal > 21){
@@ -86,6 +87,7 @@ const CardGame = () => {
 
     // checks if playerPoints is greater than highScore
     const isHighScore = (score) => {
+        console.log("High Score: ");
         if(score > highScore) {
             highScore = score;
         }
@@ -105,11 +107,11 @@ const CardGame = () => {
     const resetHand = () => {
         playerTotal = 0;
         dealerTotal = 0;
+        ss.setItem('dT', 0);
         playerCardCount = 0;
         dealerCardCount = 0;
         dCard1, dCard2, dCard3, dCard4, dCard5 = "";
         pCard1, pCard2, pCard3, pCard4, pCard5 = "";
-        console.log("Game Reset. playerTotal: " + playerTotal + " dealerTotal: " + dealerTotal);
     }
 
     // deals a card to player, updates their hand total and builds card image url
@@ -126,7 +128,7 @@ const CardGame = () => {
                 value = 10;
             }
             playerTotal += parseInt(value);
-            console.log("player dealt NUM: " + suit + ":" + value + "= " + playerTotal);
+            console.log("Player dealt NUM: " + suit + ":" + value + "= " + playerTotal);
         }
         else {
             value = cardToNum(value);
@@ -135,7 +137,7 @@ const CardGame = () => {
                 value = 10;
             }
             playerTotal += parseInt(value); // converts letter card to # value
-            console.log("player dealt FACE: " + suit + ":" + value + "= " + playerTotal);
+            console.log("Player dealt FACE: " + suit + ":" + value + "= " + playerTotal);
         }
         if(checkBust(playerTotal)){
             alert("BUSTED!");
@@ -145,7 +147,7 @@ const CardGame = () => {
 
     // deals a card to dealer, updates their hand total and builds card image url
     const dealDealerCard = async () => {
-        console.log("DEAL DEALER: " + dealerTotal);
+        dealerTotal = parseInt(ss.getItem('dT'));
         if (dealerTotal < 17 && dealerCardCount < 5){
             const res = await fetch(drawURL + deckId + "/draw/?count=1");
             const card = await res.json();
@@ -159,7 +161,7 @@ const CardGame = () => {
                 }
                 else{
                     // show card back
-
+                    dCard1 = "test"; 
                     // store card image for later
                     dealerDownCard = buildCardImage(suit, value);
                 }
@@ -167,7 +169,8 @@ const CardGame = () => {
                     value = 10;
                 }
                 dealerTotal += parseInt(value);
-                console.log("dealer dealt NUM: " + suit + ":" + value + "= " + dealerTotal);
+                ss.setItem('dT', (dealerTotal + parseInt(ss.getItem('dT'))));
+                console.log("Dealer dealt NUM: " + suit + ":" + value + "= " + dealerTotal);
             }
             else {
                 value = cardToNum(value);
@@ -176,7 +179,8 @@ const CardGame = () => {
                     value = 10;
                 }
                 dealerTotal += parseInt(value); // converts letter card to # value
-                console.log("dealer dealt FACE: " + suit + ":" + value + "= " + dealerTotal);
+                ss.setItem('dT', (dealerTotal + parseInt(ss.getItem('dT'))));
+                console.log("Dealer dealt FACE: " + suit + ":" + value + "= " + dealerTotal);
             }
         }
     }
@@ -216,7 +220,6 @@ const CardGame = () => {
             const deck = await res.json();
             cardsLeft = 312;
             deckId = deck.deck_id;
-            console.log(deckId);
             // Deals first hand
             dealerTotal = 0;
             playerTotal = 0;
