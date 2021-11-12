@@ -1,10 +1,10 @@
-import React from 'react'
+import React, {useState, useEffect } from 'react'
 import './assets/css/fonts.css';
 import Header from './Header';
 import CardGame from './CardGame';
 import Footer from './Footer';
 import Popup from './Popup';
-import { useState, useEffect } from 'react';
+
 
 function App() {
   const [timedPopup, setTimedPopup] = useState(false);

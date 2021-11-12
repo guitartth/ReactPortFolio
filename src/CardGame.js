@@ -1,21 +1,34 @@
-import React from 'react'
+import React, { useState } from 'react'
+import HighScore from './assets/highscore.json';
+
+
 
 var deckId; // deck_id for API
 var newDeck = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=6"; // API to get a full 6 decks
 var cardsLeft; // cards remaining in 6 decks
 var playerTotal; // holds player hand score
 var dealerTotal; // holds dealer hand score
-var ss = window.sessionStorage;
-ss.setItem('dT', 0);
+var ss = window.sessionStorage; // to store dealerTotal
+ss.setItem('dT', 0); // initializes dealerTotal to 0
+
+
 
 // full blackjack game
-const CardGame = () => {
+function CardGame ()  {
+    const [highScore, setHScore] = useState(() => {
+        console.log(JSON.parse(HighScore.score));
+        return JSON.parse(HighScore.score);
+    });
+
+    const [pPoints, setpPoints] = useState(0);
+
+
+
     var playerCardCount = 0; // holds player cards in hand
     var dealerCardCount = 0; // holds dealer cards in hand
     var dealerDownCard; // stores image string of dealers down card
     var drawURL = "https://deckofcardsapi.com/api/deck/"; // base url to draw a card
     var playerPoints = 0; // holds points for current player
-    var highScore = 0; // holds site lifetime high score
     var dCard1, dCard2, dCard3, dCard4, dCard5; // stores dealer card image strings
     var pCard1, pCard2, pCard3, pCard4, pCard5; // stores player card image strings
 
@@ -24,11 +37,12 @@ const CardGame = () => {
         if(playerTotal < 21 && playerCardCount < 5){
             dealPlayerCard();
         }
-        if (playerCardCount == 5){
+        if (playerCardCount === 5){
             handleStay();
         }
     }
 
+    // deals 3 more cards to dealer, regardless of total
     const dealerPlays = () => {
         dealDealerCard().then();
         dealDealerCard().then();
@@ -74,23 +88,45 @@ const CardGame = () => {
         // add points
         if(result === "win"){
             playerPoints += points;
-            isHighScore();
+            setPoints(playerPoints);
+            isHighScore(playerPoints);
             resetHand();
         }
         // subtract points
         else {
             playerPoints -= points;
+            setPoints(playerPoints);
             resetHand();
         }
         console.log("Player Points: " + playerPoints);
     }
 
     // checks if playerPoints is greater than highScore
-    const isHighScore = (score) => {
+    const isHighScore = (newScore) => {
         console.log("High Score: ");
-        if(score > highScore) {
-            highScore = score;
+        if(newScore > highScore) {
+            setHighScore(newScore);
         }
+    }
+
+    // sets new high score
+    function setHighScore(newScore) {
+        console.log("In setHighScore: " + newScore);
+        // updates highscore.json file
+        const highscore = {"score": newScore};
+        const data = JSON.stringify(highscore);
+        fs.writeFile('./assets/highscore.json', data, (err) => {
+            if (err) {
+                throw err;
+            }
+        });
+        setHScore(newScore);
+    }
+
+    // sets pPoints for display
+    function setPoints(playerPoints) {
+        console.log("in setPPoints: " + playerPoints);
+        setpPoints(playerPoints);
     }
 
     // returns true if player has blackjack, else false
@@ -223,6 +259,7 @@ const CardGame = () => {
             // Deals first hand
             dealerTotal = 0;
             playerTotal = 0;
+            console.log("High Score Load: " + highScore);
             dealHand();
         }
         catch(error) {
@@ -230,13 +267,12 @@ const CardGame = () => {
         }
     }
 
-
     // sets buttons on page and allows user control
     return (
         <div className="game">
             <div className="game_score">
-                <h5>Player Score: 0</h5>
-                <h5>High Score: 0</h5>
+                <h5>High Score: {highScore}</h5>
+                <h5>Player Score: {pPoints}</h5>
             </div>
 
             <div className="game_controls">
@@ -249,6 +285,19 @@ const CardGame = () => {
         </div>
     )
 }
+    
 
 export default CardGame
 
+/*
+GAME TEST CASES
+
+Player > Dealer, no busts: 
+
+Player < Dealer, no busts:
+
+Player Busts:
+
+Dealer Busts:
+
+*/
