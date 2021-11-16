@@ -35,8 +35,8 @@ function CardGame ()  {
 
     // gives another card to player
     const handleHit = () => {
-        if(playerTotal < 21 && playerCardCount < 5){
-            dealPlayerCard();
+        if(parseInt(ss.getItem('pT')) < 21 && playerCardCount < 5){
+            dealCard(1);
         }
         if (playerCardCount === 5){
             handleStay();
@@ -68,6 +68,18 @@ function CardGame ()  {
         dCard1 = dealerDownCard;
     }
 
+    const dealCard = (person) => {
+        var suits = JSON.parse(ss.getItem('cardArray'));
+        var thisDeal = parseInt(ss.getItem('currCard'));
+        if (person === 1){
+            dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
+        }
+        else {
+            dealDealerCard(suits[thisDeal][0], suits[thisDeal][1]);
+        }
+        ss.setItem('currCard', parseInt(ss.getItem('currCard') + 1));
+    }
+
     // deals first 4 cards, checks player blackjack
     const dealHand = () => {
         var suits = JSON.parse(ss.getItem('cardArray'));
@@ -88,6 +100,9 @@ function CardGame ()  {
         if (checkBlackJack(parseInt(ss.getItem('dT')))) {
             editPlayerPoints(5, "lose");
         }
+        console.log("AFTER DEALING IS DONE:");
+        console.log("Player: " + ss.getItem('pT'));
+        console.log("Dealer: " + ss.getItem('dT'));
     }
 
     // edits points to playerScore after hand ends
@@ -164,7 +179,7 @@ function CardGame ()  {
                 value = 10;
             }
             playerTotal += parseInt(value);
-            ss.setItem('pT', (playerTotal + parseInt(ss.getItem('pT'))));
+            ss.setItem('pT', playerTotal);
             console.log("Player dealt NUM: " + suit + ":" + value + "= " + playerTotal);
         }
         else {
@@ -174,7 +189,7 @@ function CardGame ()  {
                 value = 10;
             }
             playerTotal += parseInt(value); // converts letter card to # value
-            ss.setItem('pT', (playerTotal + parseInt(ss.getItem('pT'))));
+            ss.setItem('pT', playerTotal);
             console.log("Player dealt FACE: " + suit + ":" + value + "= " + playerTotal);
         }
         if(checkBust(playerTotal)){
@@ -208,7 +223,7 @@ function CardGame ()  {
                     value = 10;
                 }
                 dealerTotal += parseInt(value);
-                ss.setItem('dT', (dealerTotal + parseInt(ss.getItem('dT'))));
+                ss.setItem('dT', dealerTotal);
                 console.log("Dealer dealt NUM: " + suit + ":" + value + "= " + dealerTotal);
             }
             else {
@@ -218,7 +233,7 @@ function CardGame ()  {
                     value = 10;
                 }
                 dealerTotal += parseInt(value); // converts letter card to # value
-                ss.setItem('dT', (dealerTotal + parseInt(ss.getItem('dT'))));
+                ss.setItem('dT', dealerTotal);
                 console.log("Dealer dealt FACE: " + suit + ":" + value + "= " + dealerTotal);
             }
         
@@ -277,7 +292,6 @@ function CardGame ()  {
             const deck = await res.json();
             deckId = deck.deck_id;
             console.log("High Score Load: " + highScore);
-            //dealHand();
             getCards(dealHand);
         }
         catch(error) {
