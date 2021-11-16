@@ -4,12 +4,13 @@ import HighScore from './assets/highscore.json';
 
 
 var deckId; // deck_id for API
-var newDeck = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=6"; // API to get a full 6 decks
-var cardsLeft; // cards remaining in 6 decks
+var newDeck = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=12"; // API to get a full 6 decks
 var playerTotal; // holds player hand score
 var dealerTotal; // holds dealer hand score
 var ss = window.sessionStorage; // to store dealerTotal
 ss.setItem('dT', 0); // initializes dealerTotal to 0
+ss.setItem('pT', 0); // initializes playerTotal to 0
+ss.setItem('currCard', 0); // initializes current card in array to 0
 
 
 
@@ -69,17 +70,23 @@ function CardGame ()  {
 
     // deals first 4 cards, checks player blackjack
     const dealHand = () => {
-        if(cardsLeft >= 10){
-            dealPlayerCard();
-            dealDealerCard();
-            dealPlayerCard();
-            dealDealerCard();
-            if(checkBlackJack(playerTotal)){
-                editPlayerPoints(25, "win");
-            }
-            if(checkBlackJack(dealerTotal)){
-                editPlayerPoints(5, "lose");
-            }
+        var suits = JSON.parse(ss.getItem('cardArray'));
+        var thisDeal = parseInt(ss.getItem('currCard'));
+        if (thisDeal < 610){
+            dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
+            thisDeal++;
+            dealDealerCard(suits[thisDeal][0], suits[thisDeal][1]);
+            thisDeal++;
+            dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
+            thisDeal++;
+            dealDealerCard(suits[thisDeal][0], suits[thisDeal][1]);
+            ss.setItem('currCard', (thisDeal + 1));
+        }
+        if (checkBlackJack(parseInt(ss.getItem('pT')))) {
+            editPlayerPoints(25, "win");
+        } 
+        if (checkBlackJack(parseInt(ss.getItem('dT')))) {
+            editPlayerPoints(5, "lose");
         }
     }
 
@@ -112,14 +119,6 @@ function CardGame ()  {
     // sets new high score
     function setHighScore(newScore) {
         console.log("In setHighScore: " + newScore);
-        // updates highscore.json file
-        const highscore = {"score": newScore};
-        const data = JSON.stringify(highscore);
-        fs.writeFile('./assets/highscore.json', data, (err) => {
-            if (err) {
-                throw err;
-            }
-        });
         setHScore(newScore);
     }
 
@@ -144,18 +143,19 @@ function CardGame ()  {
         playerTotal = 0;
         dealerTotal = 0;
         ss.setItem('dT', 0);
+        ss.setItem('pT', 0);
         playerCardCount = 0;
         dealerCardCount = 0;
         dCard1, dCard2, dCard3, dCard4, dCard5 = "";
         pCard1, pCard2, pCard3, pCard4, pCard5 = "";
     }
 
-    // deals a card to player, updates their hand total and builds card image url
-    const dealPlayerCard = async () => {
-        const res = await fetch(drawURL + deckId + "/draw/?count=1");
-        const card = await res.json();
-        var suit = card.cards[0].suit;
-        var value = card.cards[0].value;
+    // sends next card to player, updates their hand total and builds card image url
+    const dealPlayerCard = (suits, values) => {
+        playerTotal = parseInt(ss.getItem('pT'));
+        var suit = suits;
+        var value = values;
+        //console.log("Player: " + suit + " " + value);
         playerCardCount++;
         if(value !== "ACE" && value !== "KING" && value !== "QUEEN" && value !== "JACK") { // makes sure card is # before adding to total
             // FIND A WAY TO SET IMG VARIABLE AND DISPLAY AFTER IT'S DEALT
@@ -164,6 +164,7 @@ function CardGame ()  {
                 value = 10;
             }
             playerTotal += parseInt(value);
+            ss.setItem('pT', (playerTotal + parseInt(ss.getItem('pT'))));
             console.log("Player dealt NUM: " + suit + ":" + value + "= " + playerTotal);
         }
         else {
@@ -173,22 +174,24 @@ function CardGame ()  {
                 value = 10;
             }
             playerTotal += parseInt(value); // converts letter card to # value
+            ss.setItem('pT', (playerTotal + parseInt(ss.getItem('pT'))));
             console.log("Player dealt FACE: " + suit + ":" + value + "= " + playerTotal);
         }
         if(checkBust(playerTotal)){
             alert("BUSTED!");
             editPlayerPoints(5, "lose");
         }
+        
     }
 
-    // deals a card to dealer, updates their hand total and builds card image url
-    const dealDealerCard = async () => {
+    // sends next card to dealer, updates their hand total and builds card image url
+    const dealDealerCard = (suits, values) => {
+        var suit = suits;
+        var value = values;
+        //console.log("Dealer: " + suit + " " + value);
+        
         dealerTotal = parseInt(ss.getItem('dT'));
-        if (dealerTotal < 17 && dealerCardCount < 5){
-            const res = await fetch(drawURL + deckId + "/draw/?count=1");
-            const card = await res.json();
-            var suit = card.cards[0].suit; // sets card suit
-            var value = card.cards[0].value; // sets card value
+        
             dealerCardCount++;
             if(value !== "ACE" && value !== "KING" && value !== "QUEEN" && value !== "JACK") { 
                 if (dealerTotal !== 0){
@@ -218,7 +221,8 @@ function CardGame ()  {
                 ss.setItem('dT', (dealerTotal + parseInt(ss.getItem('dT'))));
                 console.log("Dealer dealt FACE: " + suit + ":" + value + "= " + dealerTotal);
             }
-        }
+        
+        
     }
 
     // converts face card to numerical value
@@ -248,19 +252,33 @@ function CardGame ()  {
         return("/assets/imgs/cards/" + suit + "_" + value + "_black.png");
     }
 
+
+    // draws all 6 decks in order and stores in array
+    const getCards = async (CB) => {
+        const res = await fetch(drawURL + deckId + "/draw/?count=624");
+        const card = await res.json();
+        const indCards = card.cards;
+        var cardArr = [];
+        for (var c = 0; c < 624; c++){
+            var thisSuit = indCards[c].suit;
+            var thisValue = indCards[c].value;
+            var thisCard = [thisSuit, thisValue];
+            cardArr.push(thisCard);
+        }
+        ss.setItem("cardArray", JSON.stringify(cardArr));
+        CB();
+    }
+
     // gets a new deck from api when page loads
     window.onload = async function getNewDeck() {
         try {
             const res = await fetch(newDeck);
             if(!res.ok) throw new Error();
             const deck = await res.json();
-            cardsLeft = 312;
             deckId = deck.deck_id;
-            // Deals first hand
-            dealerTotal = 0;
-            playerTotal = 0;
             console.log("High Score Load: " + highScore);
-            dealHand();
+            //dealHand();
+            getCards(dealHand);
         }
         catch(error) {
             console.log(error);
