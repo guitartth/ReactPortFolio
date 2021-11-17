@@ -2,9 +2,6 @@ import React, { useState } from 'react'
 import HighScore from './assets/highscore.json';
 //import images from './Images';
 
-import cardBack from './assets/img/cardback.png';
-import blankCard from './assets/img/blankcard.png';
-import Clubs2 from './assets/img/CLUBS_2_black.png';
 
 var deckId; // deck_id for API
 var newDeck = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=12"; // API to get a full 6 decks
@@ -15,6 +12,8 @@ ss.setItem('dT', 0); // initializes dealerTotal to 0
 ss.setItem('pT', 0); // initializes playerTotal to 0
 ss.setItem('currCard', 0); // initializes current card in array to 0
 ss.setItem('playersPoints', 0);
+ss.setItem('dCC', 1);
+ss.setItem('pCC', 1);
 
 
 // full blackjack game
@@ -27,6 +26,7 @@ function CardGame ()  {
     const [pPoints, setpPoints] = useState(0);
 
     const [dCard1, setDCard1] = useState();
+
     const [dCard2, setDCard2] = useState();
     const [dCard3, setDCard3] = useState();
     const [dCard4, setDCard4] = useState();
@@ -38,8 +38,6 @@ function CardGame ()  {
     const [pCard4, setPCard4] = useState();
     const [pCard5, setPCard5] = useState();
 
-    const clubs22 = '/imgs/Clubs_2_blank.png';
-
     const setDealCard1 = (path) => {
         setDCard1(path);
     }
@@ -48,25 +46,56 @@ function CardGame ()  {
         setDCard2(path);
     }
 
-    var playerCardCount = 0; // holds player cards in hand
-    var dealerCardCount = 0; // holds dealer cards in hand
-    var dealerDownCard; // stores image string of dealers down card
+    const setDealCard3 = (path) => {
+        setDCard3(path);
+    }
+
+    const setDealCard4 = (path) => {
+        setDCard4(path);
+    }
+
+    const setDealCard5 = (path) => {
+        setDCard5(path);
+    }
+
+    const setPlayCard1 = (path) => {
+        setPCard1(path);
+    }
+
+    const setPlayCard2 = (path) => {
+        setPCard2(path);
+    }
+
+    const setPlayCard3 = (path) => {
+        setPCard3(path);
+    }
+
+    const setPlayCard4 = (path) => {
+        setPCard4(path);
+    }
+
+    const setPlayCard5 = (path) => {
+        setPCard5(path);
+    }
+
+
+    var dealerDownCard = ""; // stores image string of dealers down card
     var drawURL = "https://deckofcardsapi.com/api/deck/"; // base url to draw a card
     //var playerPoints = 0; // holds points for current player
 
     // gives another card to player
     const handleHit = () => {
-        if(parseInt(ss.getItem('pT')) < 21 && playerCardCount < 5){
+        if(parseInt(ss.getItem('pT')) < 21 && parseInt(ss.getItem('pCC')) < 5){
             dealCard(1);
         }
-        if (playerCardCount === 5){
+        if (parseInt(ss.getItem('pCC')) === 5){
             handleStay();
         }
     }
 
     // deals 3 more cards to dealer, regardless of total
     const dealerPlays = () => {
-        if (parseInt(ss.getItem('dT')) < 17 && parseInt(ss.getItem('dT')) < 21 && dealerCardCount < 5){
+        if (parseInt(ss.getItem('dT')) < 17 && parseInt(ss.getItem('dT')) < 21 && parseInt(ss.getItem('dCC')) < 5){
             dealCard(2);
         }  
     }
@@ -88,7 +117,7 @@ function CardGame ()  {
 
     // turns over dealer card with images
     const showDealerCard = () => {
-        //dCard1 = dealerDownCard;
+        //setDealCard1(dealerDownCard);
     }
 
     const dealCard = (person) => {
@@ -104,9 +133,9 @@ function CardGame ()  {
         ss.setItem('currCard', thisDeal);
     }
 
-
     // deals first 4 cards, checks player blackjack
     const dealHand = () => {
+        resetCardImages();
         var suits = JSON.parse(ss.getItem('cardArray'));
         var thisDeal = parseInt(ss.getItem('currCard'));
         if (thisDeal < 610){
@@ -181,9 +210,21 @@ function CardGame ()  {
         dealerTotal = 0;
         ss.setItem('dT', 0);
         ss.setItem('pT', 0);
-        playerCardCount = 0;
-        dealerCardCount = 0;
-        
+        ss.setItem('dCC', 1);
+        ss.setItem('pCC', 1);
+    }
+
+    const resetCardImages = () => {
+        setPlayCard1("");
+        setPlayCard2("");
+        setPlayCard3("");
+        setPlayCard4("");
+        setPlayCard5("");
+        setDealCard1("");
+        setDealCard2("");
+        setDealCard3("");
+        setDealCard4("");
+        setDealCard5("");
     }
 
     // sends next card to player, updates their hand total and builds card image url
@@ -191,22 +232,38 @@ function CardGame ()  {
         playerTotal = parseInt(ss.getItem('pT'));
         var suit = suits;
         var value = values;
-        //console.log("Player: " + suit + " " + value);
-        playerCardCount++;
-        if(value !== "ACE" && value !== "KING" && value !== "QUEEN" && value !== "JACK") { // makes sure card is # before adding to total
-            // FIND A WAY TO SET IMG VARIABLE AND DISPLAY AFTER IT'S DEALT
-            buildCardImage(suit, value);
-            if (value > 10){
-                value = 10;
-            }
+        var playerCC = parseInt(ss.getItem('pCC'));
+
+        switch(playerCC) {
+            case 1:
+                setPlayCard1(buildCardImage(suit, value));
+                break;
+            case 2:
+                setPlayCard2(buildCardImage(suit, value));
+                break;
+            case 3:
+                setPlayCard3(buildCardImage(suit, value));
+                break;
+            case 4:
+                setPlayCard4(buildCardImage(suit, value));
+                break;
+            case 5:
+                setPlayCard5(buildCardImage(suit, value));
+                break;
+            default:
+                break;
+        }
+
+        if(value !== "ACE" && value !== "KING" && value !== "QUEEN" && value !== "JACK") { 
             playerTotal += parseInt(value);
             ss.setItem('pT', playerTotal);
             console.log("Player dealt NUM: " + suit + ":" + value + "= " + playerTotal);
         }
         else {
-            value = cardToNum(value);
-            buildCardImage(suit, value);
-            if (value > 10){
+            if (value == "ACE") {
+                value = 11;
+            }
+            else {
                 value = 10;
             }
             playerTotal += parseInt(value); // converts letter card to # value
@@ -216,73 +273,56 @@ function CardGame ()  {
         if(checkBust(playerTotal)){
             alert("BUSTED!");
             editPlayerPoints(5, "lose");
+            dealHand();
         }
-        
+        ss.setItem('pCC', (playerCC + 1));
     }
 
     // sends next card to dealer, updates their hand total and builds card image url
     const dealDealerCard = (suits, values) => {
         var suit = suits;
         var value = values;
-        //console.log("Dealer: " + suit + " " + value);
+        var dealerCC = parseInt(ss.getItem('dCC'));
         
-        dealerTotal = parseInt(ss.getItem('dT'));
-        
-            dealerCardCount++;
+        switch(dealerCC) {
+            case 1:
+                dealerDownCard = buildCardImage(suit, value);
+                setDealCard1("/assets/imgs/cards/cardback.png");
+                break;
+            case 2:
+                setDealCard2(buildCardImage(suit, value));
+                break;
+            case 3:
+                setDealCard3(buildCardImage(suit, value));
+                break;
+            case 4:
+                setDealCard4(buildCardImage(suit, value));
+                break;
+            case 5:
+                setDealCard5(buildCardImage(suit, value));
+                break;
+            default:
+                break;
+        }
+
+        dealerTotal = parseInt(ss.getItem('dT'));    
             if(value !== "ACE" && value !== "KING" && value !== "QUEEN" && value !== "JACK") { 
-                if (dealerTotal !== 0){
-                    // show card
-                    buildCardImage(suit, value);
-                }
-                else{
-                    // show card back
-                    setDealCard1("Clubs_10_black.png"); 
-                    setDealCard2(Clubs2);
-                    
-                    // store card image for later
-                    dealerDownCard = buildCardImage(suit, value);
-                }
-                if (value > 10){
-                    value = 10;
-                }
                 dealerTotal += parseInt(value);
                 ss.setItem('dT', dealerTotal);
                 console.log("Dealer dealt NUM: " + suit + ":" + value + "= " + dealerTotal);
             }
             else {
-                value = cardToNum(value);
-                buildCardImage(suit, value);
-                if (value > 10){
+                if (value == "ACE") {
+                    value = 11;
+                }
+                else {
                     value = 10;
                 }
                 dealerTotal += parseInt(value); // converts letter card to # value
                 ss.setItem('dT', dealerTotal);
                 console.log("Dealer dealt FACE: " + suit + ":" + value + "= " + dealerTotal);
             }
-        
-        
-    }
-
-    // converts face card to numerical value
-    const cardToNum = (card) => {
-        var value;
-        switch (card) {
-            case "ACE":
-                value = 14;
-                break;
-            case "KING":
-                value = 13;
-                break;
-            case "QUEEN":
-                value = 12;
-                break;
-            case "JACK":
-                value = 11;
-                break;
-            default:
-                break;
-        }
-        return value;
+            ss.setItem('dCC', (dealerCC + 1));
     }
 
     // builds asset url for card
@@ -329,14 +369,21 @@ function CardGame ()  {
                 <h5>High Score: {highScore}</h5>
                 <h5>Player Score: {pPoints}</h5>
             </div>
-
+            
             <div className="dealer_cards">
                 <img src={dCard1} width="185" height="auto" />
-                <img src={process.env.PUBLIC_URL + clubs22} width="185" height="auto" />
+                <img src={dCard2} width="185" height="auto" />
+                <img src={dCard3} width="185" height="auto" />
+                <img src={dCard4} width="185" height="auto" />
+                <img src={dCard5} width="185" height="auto" />
             </div>
-
+            
             <div className="player_cards">
-
+                <img src={pCard1} width="185" height="auto" />
+                <img src={pCard2} width="185" height="auto" />
+                <img src={pCard3} width="185" height="auto" />
+                <img src={pCard4} width="185" height="auto" />
+                <img src={pCard5} width="185" height="auto" />
             </div>
 
             <div className="game_controls">
@@ -353,15 +400,3 @@ function CardGame ()  {
 
 export default CardGame
 
-/*
-GAME TEST CASES
-
-Player > Dealer, no busts: 
-
-Player < Dealer, no busts:
-
-Player Busts:
-
-Dealer Busts:
-
-*/
