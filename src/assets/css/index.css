@@ -180,3 +180,7 @@ html a {
   height: auto;
   display: inline-block;
 }
+
+.dealer_cards {
+  align-content: center;
+}

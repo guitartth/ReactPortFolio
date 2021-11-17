@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import HighScore from './assets/highscore.json';
+//import images from './Images';
 
-
+import cardBack from './assets/img/cardback.png';
+import blankCard from './assets/img/blankcard.png';
+import Clubs2 from './assets/img/CLUBS_2_black.png';
 
 var deckId; // deck_id for API
 var newDeck = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=12"; // API to get a full 6 decks
@@ -11,7 +14,7 @@ var ss = window.sessionStorage; // to store dealerTotal
 ss.setItem('dT', 0); // initializes dealerTotal to 0
 ss.setItem('pT', 0); // initializes playerTotal to 0
 ss.setItem('currCard', 0); // initializes current card in array to 0
-
+ss.setItem('playersPoints', 0);
 
 
 // full blackjack game
@@ -23,15 +26,33 @@ function CardGame ()  {
 
     const [pPoints, setpPoints] = useState(0);
 
+    const [dCard1, setDCard1] = useState();
+    const [dCard2, setDCard2] = useState();
+    const [dCard3, setDCard3] = useState();
+    const [dCard4, setDCard4] = useState();
+    const [dCard5, setDCard5] = useState();
 
+    const [pCard1, setPCard1] = useState();
+    const [pCard2, setPCard2] = useState();
+    const [pCard3, setPCard3] = useState();
+    const [pCard4, setPCard4] = useState();
+    const [pCard5, setPCard5] = useState();
+
+    const clubs22 = '/imgs/Clubs_2_blank.png';
+
+    const setDealCard1 = (path) => {
+        setDCard1(path);
+    }
+
+    const setDealCard2 = (path) => {
+        setDCard2(path);
+    }
 
     var playerCardCount = 0; // holds player cards in hand
     var dealerCardCount = 0; // holds dealer cards in hand
     var dealerDownCard; // stores image string of dealers down card
     var drawURL = "https://deckofcardsapi.com/api/deck/"; // base url to draw a card
-    var playerPoints = 0; // holds points for current player
-    var dCard1, dCard2, dCard3, dCard4, dCard5; // stores dealer card image strings
-    var pCard1, pCard2, pCard3, pCard4, pCard5; // stores player card image strings
+    //var playerPoints = 0; // holds points for current player
 
     // gives another card to player
     const handleHit = () => {
@@ -67,13 +88,12 @@ function CardGame ()  {
 
     // turns over dealer card with images
     const showDealerCard = () => {
-        dCard1 = dealerDownCard;
+        //dCard1 = dealerDownCard;
     }
 
     const dealCard = (person) => {
         var suits = JSON.parse(ss.getItem('cardArray'));
         var thisDeal = parseInt(ss.getItem('currCard'));
-        console.log("CURR CARD BEFORE DEAL: " + ss.getItem('currCard'));
         if (person === 1){
             dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
         }
@@ -82,11 +102,6 @@ function CardGame ()  {
         }
         thisDeal++;
         ss.setItem('currCard', thisDeal);
-        
-        console.log("AFTER DEAL CARD IS DONE:" + ss.getItem('currCard'));
-        console.log("Player: " + ss.getItem('pT'));
-        console.log("Dealer: " + ss.getItem('dT'));
-        console.log("CURR CARD AFTER DEAL: " + ss.getItem('currCard'));
     }
 
 
@@ -94,7 +109,6 @@ function CardGame ()  {
     const dealHand = () => {
         var suits = JSON.parse(ss.getItem('cardArray'));
         var thisDeal = parseInt(ss.getItem('currCard'));
-        console.log("thisDeal: " + thisDeal);
         if (thisDeal < 610){
             dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
             thisDeal++;
@@ -111,28 +125,24 @@ function CardGame ()  {
         if (checkBlackJack(parseInt(ss.getItem('dT')))) {
             editPlayerPoints(5, "lose");
         }
-        console.log("AFTER DEALING IS DONE:");
-        console.log("Player: " + ss.getItem('pT'));
-        console.log("Dealer: " + ss.getItem('dT'));
-        console.log("CURR CARD: " + ss.getItem('currCard'));
     }
 
     // edits points to playerScore after hand ends
     const editPlayerPoints = (points, result) => {
+        var currPoints = parseInt(ss.getItem('playersPoints'));
         // add points
         if(result === "win"){
-            playerPoints += points;
-            setPoints(playerPoints);
-            isHighScore(playerPoints);
+            currPoints += points;
+            setPoints(currPoints);
+            isHighScore(currPoints);
             resetHand();
         }
         // subtract points
         else {
-            playerPoints -= points;
-            setPoints(playerPoints);
+            currPoints -= points;
+            setPoints(currPoints);
             resetHand();
         }
-        console.log("Player Points: " + playerPoints);
     }
 
     // checks if playerPoints is greater than highScore
@@ -151,7 +161,7 @@ function CardGame ()  {
 
     // sets pPoints for display
     function setPoints(playersPoints) {
-        console.log("in setPPoints: " + playersPoints);
+        ss.setItem('playersPoints', playersPoints);
         setpPoints(playersPoints);
     }
 
@@ -173,8 +183,7 @@ function CardGame ()  {
         ss.setItem('pT', 0);
         playerCardCount = 0;
         dealerCardCount = 0;
-        dCard1, dCard2, dCard3, dCard4, dCard5 = "";
-        pCard1, pCard2, pCard3, pCard4, pCard5 = "";
+        
     }
 
     // sends next card to player, updates their hand total and builds card image url
@@ -227,7 +236,9 @@ function CardGame ()  {
                 }
                 else{
                     // show card back
-                    dCard1 = "test"; 
+                    setDealCard1("Clubs_10_black.png"); 
+                    setDealCard2(Clubs2);
+                    
                     // store card image for later
                     dealerDownCard = buildCardImage(suit, value);
                 }
@@ -319,6 +330,15 @@ function CardGame ()  {
                 <h5>Player Score: {pPoints}</h5>
             </div>
 
+            <div className="dealer_cards">
+                <img src={dCard1} width="185" height="auto" />
+                <img src={process.env.PUBLIC_URL + clubs22} width="185" height="auto" />
+            </div>
+
+            <div className="player_cards">
+
+            </div>
+
             <div className="game_controls">
                 <button className="control_btn" onClick={dealHand}>Deal</button>
                 <div className="divider" />
@@ -329,7 +349,7 @@ function CardGame ()  {
         </div>
     )
 }
-    
+
 
 export default CardGame
 
