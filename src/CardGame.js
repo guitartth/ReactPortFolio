@@ -45,14 +45,16 @@ function CardGame ()  {
 
     // deals 3 more cards to dealer, regardless of total
     const dealerPlays = () => {
-        dealDealerCard().then();
-        dealDealerCard().then();
-        dealDealerCard().then();
+        if (parseInt(ss.getItem('dT')) < 17 && parseInt(ss.getItem('dT')) < 21 && dealerCardCount < 5){
+            dealCard(2);
+        }  
     }
 
     // ends player turn and begins dealer turn
     const handleStay = () => {
         showDealerCard();
+        dealerPlays();
+        dealerPlays();
         dealerPlays();
 
         if(playerTotal > dealerTotal || dealerTotal > 21){
@@ -71,19 +73,28 @@ function CardGame ()  {
     const dealCard = (person) => {
         var suits = JSON.parse(ss.getItem('cardArray'));
         var thisDeal = parseInt(ss.getItem('currCard'));
+        console.log("CURR CARD BEFORE DEAL: " + ss.getItem('currCard'));
         if (person === 1){
             dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
         }
         else {
             dealDealerCard(suits[thisDeal][0], suits[thisDeal][1]);
         }
-        ss.setItem('currCard', parseInt(ss.getItem('currCard') + 1));
+        thisDeal++;
+        ss.setItem('currCard', thisDeal);
+        
+        console.log("AFTER DEAL CARD IS DONE:" + ss.getItem('currCard'));
+        console.log("Player: " + ss.getItem('pT'));
+        console.log("Dealer: " + ss.getItem('dT'));
+        console.log("CURR CARD AFTER DEAL: " + ss.getItem('currCard'));
     }
+
 
     // deals first 4 cards, checks player blackjack
     const dealHand = () => {
         var suits = JSON.parse(ss.getItem('cardArray'));
         var thisDeal = parseInt(ss.getItem('currCard'));
+        console.log("thisDeal: " + thisDeal);
         if (thisDeal < 610){
             dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
             thisDeal++;
@@ -103,6 +114,7 @@ function CardGame ()  {
         console.log("AFTER DEALING IS DONE:");
         console.log("Player: " + ss.getItem('pT'));
         console.log("Dealer: " + ss.getItem('dT'));
+        console.log("CURR CARD: " + ss.getItem('currCard'));
     }
 
     // edits points to playerScore after hand ends
@@ -138,9 +150,9 @@ function CardGame ()  {
     }
 
     // sets pPoints for display
-    function setPoints(playerPoints) {
-        console.log("in setPPoints: " + playerPoints);
-        setpPoints(playerPoints);
+    function setPoints(playersPoints) {
+        console.log("in setPPoints: " + playersPoints);
+        setpPoints(playersPoints);
     }
 
     // returns true if player has blackjack, else false
