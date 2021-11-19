@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import HighScore from './assets/highscore.json';
-//import images from './Images';
-
+//import useSound from 'use-sound';
+//import dlCrdSnd from '/assets/snds/dealCardSound.wav';
 
 var deckId; // deck_id for API
 var newDeck = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=12"; // API to get a full 6 decks
@@ -14,19 +14,25 @@ ss.setItem('currCard', 0); // initializes current card in array to 0
 ss.setItem('playersPoints', 0);
 ss.setItem('dCC', 1);
 ss.setItem('pCC', 1);
-
+ss.setItem('dAce', 0); // dealer - 0 for no ace in hand, 1 for yes, 2 for used
+ss.setItem('pAce', 0); // player - 0 for no ace in hand, 1 for yes, 2 for used
+ss.setItem('start', 1); // flag for start of game for clearing cards
 
 // full blackjack game
 function CardGame ()  {
     const [highScore, setHScore] = useState(() => {
-        console.log(JSON.parse(HighScore.score));
+        //console.log(JSON.parse(HighScore.score));
         return JSON.parse(HighScore.score);
     });
 
     const [pPoints, setpPoints] = useState(0);
+    const [handResult, setResult] = useState();
+
+    const setResults = (result) => {
+        setResult(result);
+    }
 
     const [dCard1, setDCard1] = useState();
-
     const [dCard2, setDCard2] = useState();
     const [dCard3, setDCard3] = useState();
     const [dCard4, setDCard4] = useState();
@@ -78,14 +84,15 @@ function CardGame ()  {
         setPCard5(path);
     }
 
-
-    var dealerDownCard = ""; // stores image string of dealers down card
+    ss.setItem('dDC', ""); // stores image string of dealers down card
+     
     var drawURL = "https://deckofcardsapi.com/api/deck/"; // base url to draw a card
     //var playerPoints = 0; // holds points for current player
 
     // gives another card to player
     const handleHit = () => {
-        if(parseInt(ss.getItem('pT')) < 21 && parseInt(ss.getItem('pCC')) < 5){
+        console.log("handleHit");
+        if (parseInt(ss.getItem('pT')) < 21 && parseInt(ss.getItem('pCC')) < 5){
             dealCard(1);
         }
         if (parseInt(ss.getItem('pCC')) === 5){
@@ -93,19 +100,85 @@ function CardGame ()  {
         }
     }
 
-    // deals 3 more cards to dealer, regardless of total
-    const dealerPlays = () => {
-        if (parseInt(ss.getItem('dT')) < 17 && parseInt(ss.getItem('dT')) < 21 && parseInt(ss.getItem('dCC')) < 5){
+    // deals card to dealer 
+    const dealerPlays1 = () => {
+        console.log("dealerPlays1");
+        if (parseInt(ss.getItem('dT')) < 17 && parseInt(ss.getItem('dCC')) < 5){
+            //console.log("in dealerPlays DEAL");
             dealCard(2);
-        }  
+        }
+        else if (parseInt(ss.getItem('dT')) < 22) {
+            return;
+        }
+        else if (parseInt(ss.getItem('pAce')) !== 1) {
+            setResults("Dealer Busts!");
+            alert("Dealer Busts!");
+            editPlayerPoints(10, "win");
+        }
+        else {
+            var sub10 = parseInt(ss.getItem('dT')) - 10;
+            ss.setItem('dAce', 2);
+            ss.setItem('pT', sub10);
+        }
+        //console.log("dealerPlays Total AFTER: " + ss.getItem('dT'));
+        //console.log("dealerPlays dCC AFTER: " + ss.getItem('dCC'));
+    }
+
+    // deals card to dealer 
+    const dealerPlays2 = () => {
+        console.log("dealerPlays2");
+        if (parseInt(ss.getItem('dT')) < 17 && parseInt(ss.getItem('dCC')) < 5){
+            //console.log("in dealerPlays DEAL");
+            dealCard(2);
+        }
+        else if (parseInt(ss.getItem('dT')) < 22) {
+            return;
+        }
+        else if (parseInt(ss.getItem('pAce')) !== 1) {
+            setResults("Dealer Busts!");
+            alert("Dealer Busts!");
+            editPlayerPoints(10, "win");
+        }
+        else {
+            var sub10 = parseInt(ss.getItem('dT')) - 10;
+            ss.setItem('dAce', 2);
+            ss.setItem('pT', sub10);
+        }
+        //console.log("dealerPlays Total AFTER: " + ss.getItem('dT'));
+        //console.log("dealerPlays dCC AFTER: " + ss.getItem('dCC'));
+    }
+
+    // deals card to dealer 
+    const dealerPlays3 = () => {
+        console.log("dealerPlays");
+        if (parseInt(ss.getItem('dT')) < 17 && parseInt(ss.getItem('dCC')) < 5){
+            //console.log("in dealerPlays DEAL");
+            dealCard(2);
+        }
+        else if (parseInt(ss.getItem('dT')) < 22) {
+            return;
+        }
+        else if (parseInt(ss.getItem('pAce')) !== 1) {
+            setResults("Dealer Busts!");
+            alert("Dealer Busts!");
+            editPlayerPoints(10, "win");
+        }
+        else {
+            var sub10 = parseInt(ss.getItem('dT')) - 10;
+            ss.setItem('dAce', 2);
+            ss.setItem('pT', sub10);
+        }
+        //console.log("dealerPlays Total AFTER: " + ss.getItem('dT'));
+        //console.log("dealerPlays dCC AFTER: " + ss.getItem('dCC'));
     }
 
     // ends player turn and begins dealer turn
     const handleStay = () => {
-        showDealerCard();
-        dealerPlays();
-        dealerPlays();
-        dealerPlays();
+        console.log("handleStay");
+        showDealerCard(ss.getItem('ddcS'), ss.getItem('ddcV'));
+        dealerPlays1();
+        dealerPlays2();
+        dealerPlays3();
 
         if(playerTotal > dealerTotal || dealerTotal > 21){
             editPlayerPoints(10, "win");
@@ -116,11 +189,12 @@ function CardGame ()  {
     }
 
     // turns over dealer card with images
-    const showDealerCard = () => {
-        //setDealCard1(dealerDownCard);
+    const showDealerCard = (suit, value) => {
+        setDealCard1("/assets/imgs/cards/" + suit + "_" + value + "_black.png");
     }
 
     const dealCard = (person) => {
+        console.log("dealCard");
         var suits = JSON.parse(ss.getItem('cardArray'));
         var thisDeal = parseInt(ss.getItem('currCard'));
         if (person === 1){
@@ -131,11 +205,19 @@ function CardGame ()  {
         }
         thisDeal++;
         ss.setItem('currCard', thisDeal);
+
+        //useSound(dlCrdSnd, {volume: 0.9});
     }
 
     // deals first 4 cards, checks player blackjack
     const dealHand = () => {
-        resetCardImages();
+        console.log("dealHand");
+        if (parseInt(ss.getItem('start')) !== 1){
+            resetCardImages();
+            ss.setItem('start', 0);
+        }
+        setResult(" ");
+        resetHand();
         var suits = JSON.parse(ss.getItem('cardArray'));
         var thisDeal = parseInt(ss.getItem('currCard'));
         if (thisDeal < 610){
@@ -176,7 +258,7 @@ function CardGame ()  {
 
     // checks if playerPoints is greater than highScore
     const isHighScore = (newScore) => {
-        console.log("High Score: ");
+        //console.log("High Score: ");
         if(newScore > highScore) {
             setHighScore(newScore);
         }
@@ -184,7 +266,7 @@ function CardGame ()  {
 
     // sets new high score
     function setHighScore(newScore) {
-        console.log("In setHighScore: " + newScore);
+        //console.log("In setHighScore: " + newScore);
         setHScore(newScore);
     }
 
@@ -201,34 +283,39 @@ function CardGame ()  {
 
     // returns true if player busts, else false
     const checkBust = (total) => {
-        return(total > 21);
+        console.log("checkBust");
+        return (total > 21);
     }
 
     // resets variables for new hand
     const resetHand = () => {
-        playerTotal = 0;
-        dealerTotal = 0;
+        console.log("resetHand");
         ss.setItem('dT', 0);
         ss.setItem('pT', 0);
         ss.setItem('dCC', 1);
         ss.setItem('pCC', 1);
+        ss.setItem('pAce', 0);
+        ss.setItem('dAce', 0);
     }
 
+    // resets card images to empty
     const resetCardImages = () => {
-        setPlayCard1("");
-        setPlayCard2("");
-        setPlayCard3("");
-        setPlayCard4("");
-        setPlayCard5("");
-        setDealCard1("");
-        setDealCard2("");
-        setDealCard3("");
-        setDealCard4("");
-        setDealCard5("");
+        console.log("resetCardImages");
+        setPlayCard1("/assets/imgs/cards/cardback.png");
+        setPlayCard2("/assets/imgs/cards/blankcard.png");
+        setPlayCard3("/assets/imgs/cards/blankcard.png");
+        setPlayCard4("/assets/imgs/cards/blankcard.png");
+        setPlayCard5("/assets/imgs/cards/blankcard.png");
+        setDealCard1("/assets/imgs/cards/blankcard.png");
+        setDealCard2("/assets/imgs/cards/blankcard.png");
+        setDealCard3("/assets/imgs/cards/blankcard.png");
+        setDealCard4("/assets/imgs/cards/blankcard.png");
+        setDealCard5("/assets/imgs/cards/blankcard.png");
     }
 
     // sends next card to player, updates their hand total and builds card image url
     const dealPlayerCard = (suits, values) => {
+        console.log("dealPlayerCard");
         playerTotal = parseInt(ss.getItem('pT'));
         var suit = suits;
         var value = values;
@@ -260,7 +347,8 @@ function CardGame ()  {
             console.log("Player dealt NUM: " + suit + ":" + value + "= " + playerTotal);
         }
         else {
-            if (value == "ACE") {
+            if (value === "ACE") {
+                ss.setItem('pAce', 1);
                 value = 11;
             }
             else {
@@ -270,24 +358,34 @@ function CardGame ()  {
             ss.setItem('pT', playerTotal);
             console.log("Player dealt FACE: " + suit + ":" + value + "= " + playerTotal);
         }
-        if(checkBust(playerTotal)){
-            alert("BUSTED!");
-            editPlayerPoints(5, "lose");
-            dealHand();
+        if(parseInt(ss.getItem('pAce')) !== 1 && parseInt(ss.getItem('pCC')) > 2) {
+            if(checkBust(playerTotal)){
+                setResults("You Busted!");
+                alert("BUSTED!");
+                editPlayerPoints(5, "lose");
+            }
         }
+        else if (parseInt(ss.getItem('pAce') === 1 && parseInt(ss.getItem('pCC')) > 2)) {
+            var sub10 = parseInt(ss.getItem('pT')) - 10;
+            ss.setItem('pAce', 2);
+            ss.setItem('pT', sub10);
+        }
+        
         ss.setItem('pCC', (playerCC + 1));
     }
 
     // sends next card to dealer, updates their hand total and builds card image url
     const dealDealerCard = (suits, values) => {
+        console.log("dealDealerCard");
         var suit = suits;
         var value = values;
         var dealerCC = parseInt(ss.getItem('dCC'));
         
         switch(dealerCC) {
             case 1:
-                dealerDownCard = buildCardImage(suit, value);
-                setDealCard1("/assets/imgs/cards/cardback.png");
+                ss.setItem('ddcS', suit);
+                ss.setItem('ddcV', value);
+                setDealCard1(buildCardImage(0, 0));
                 break;
             case 2:
                 setDealCard2(buildCardImage(suit, value));
@@ -312,7 +410,8 @@ function CardGame ()  {
                 console.log("Dealer dealt NUM: " + suit + ":" + value + "= " + dealerTotal);
             }
             else {
-                if (value == "ACE") {
+                if (value === "ACE") {
+                    ss.setItem('dAce', 1);
                     value = 11;
                 }
                 else {
@@ -327,6 +426,9 @@ function CardGame ()  {
 
     // builds asset url for card
     const buildCardImage = (suit, value) => {
+        if (suit === 0) {
+            return("/assets/imgs/cards/cardback.png");
+        }
         return("/assets/imgs/cards/" + suit + "_" + value + "_black.png");
     }
 
@@ -354,7 +456,7 @@ function CardGame ()  {
             if(!res.ok) throw new Error();
             const deck = await res.json();
             deckId = deck.deck_id;
-            console.log("High Score Load: " + highScore);
+            //console.log("High Score Load: " + highScore);
             getCards(dealHand);
         }
         catch(error) {
@@ -386,12 +488,15 @@ function CardGame ()  {
                 <img src={pCard5} width="185" height="auto" />
             </div>
 
+            <h3>{handResult}</h3>
+
             <div className="game_controls">
                 <button className="control_btn" onClick={dealHand}>Deal</button>
                 <div className="divider" />
                 <button className="control_btn" onClick={handleHit}>Hit</button>
                 <div className="divider" />
                 <button className="control_btn" onClick={handleStay}>Stay</button>
+                
             </div>
         </div>
     )
