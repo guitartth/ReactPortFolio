@@ -95,7 +95,7 @@ function CardGame ()  {
         if (parseInt(ss.getItem('pT')) < 21 && parseInt(ss.getItem('pCC')) < 5){
             dealCard(1);
         }
-        if (parseInt(ss.getItem('pCC')) === 5){
+        if (parseInt(ss.getItem('pCC')) === 6){
             handleStay();
         }
     }
@@ -112,7 +112,7 @@ function CardGame ()  {
         }
         else if (parseInt(ss.getItem('pAce')) !== 1) {
             setResults("Dealer Busts!");
-            alert("Dealer Busts!");
+            //alert("Dealer Busts!");
             editPlayerPoints(10, "win");
         }
         else {
@@ -136,7 +136,7 @@ function CardGame ()  {
         }
         else if (parseInt(ss.getItem('pAce')) !== 1) {
             setResults("Dealer Busts!");
-            alert("Dealer Busts!");
+            //alert("Dealer Busts!");
             editPlayerPoints(10, "win");
         }
         else {
@@ -150,7 +150,7 @@ function CardGame ()  {
 
     // deals card to dealer 
     const dealerPlays3 = () => {
-        console.log("dealerPlays");
+        console.log("dealerPlays3");
         if (parseInt(ss.getItem('dT')) < 17 && parseInt(ss.getItem('dCC')) < 5){
             //console.log("in dealerPlays DEAL");
             dealCard(2);
@@ -160,7 +160,7 @@ function CardGame ()  {
         }
         else if (parseInt(ss.getItem('pAce')) !== 1) {
             setResults("Dealer Busts!");
-            alert("Dealer Busts!");
+            //alert("Dealer Busts!");
             editPlayerPoints(10, "win");
         }
         else {
@@ -168,7 +168,7 @@ function CardGame ()  {
             ss.setItem('dAce', 2);
             ss.setItem('pT', sub10);
         }
-        //console.log("dealerPlays Total AFTER: " + ss.getItem('dT'));
+        console.log("dealerPlays3 Total AFTER: " + ss.getItem('dT'));
         //console.log("dealerPlays dCC AFTER: " + ss.getItem('dCC'));
     }
 
@@ -180,10 +180,12 @@ function CardGame ()  {
         dealerPlays2();
         dealerPlays3();
 
-        if(playerTotal > dealerTotal || dealerTotal > 21){
+        if (parseInt(ss.getItem('pT')) > parseInt(ss.getItem('dT')) || parseInt(ss.getItem('dT')) > 21) {
+            setResults("You win!");
             editPlayerPoints(10, "win");
         }
         else{
+            setResults("You lose!");
             editPlayerPoints(5, "lose");
         }
     }
@@ -212,10 +214,11 @@ function CardGame ()  {
     // deals first 4 cards, checks player blackjack
     const dealHand = () => {
         console.log("dealHand");
+        console.log("start: " + ss.getItem('start'));
         if (parseInt(ss.getItem('start')) !== 1){
             resetCardImages();
-            ss.setItem('start', 0);
         }
+        ss.setItem('start', 0);
         setResult(" ");
         resetHand();
         var suits = JSON.parse(ss.getItem('cardArray'));
@@ -231,18 +234,23 @@ function CardGame ()  {
             ss.setItem('currCard', (thisDeal + 1));
         }
         if (checkBlackJack(parseInt(ss.getItem('pT')))) {
+            setResults("Blackjack!");
             editPlayerPoints(25, "win");
         } 
         if (checkBlackJack(parseInt(ss.getItem('dT')))) {
-            editPlayerPoints(5, "lose");
+            showDealerCard(ss.getItem('ddcS'), ss.getItem('ddcV'));
+            setResults("Dealer Blackjack!");
+            editPlayerPoints(10, "lose");
         }
     }
 
     // edits points to playerScore after hand ends
     const editPlayerPoints = (points, result) => {
         var currPoints = parseInt(ss.getItem('playersPoints'));
+        console.log("editPoints currPoints: " + currPoints);
+        console.log("editPoints point adjust: " + points);
         // add points
-        if(result === "win"){
+        if(result == "win"){
             currPoints += points;
             setPoints(currPoints);
             isHighScore(currPoints);
@@ -361,7 +369,7 @@ function CardGame ()  {
         if(parseInt(ss.getItem('pAce')) !== 1 && parseInt(ss.getItem('pCC')) > 2) {
             if(checkBust(playerTotal)){
                 setResults("You Busted!");
-                alert("BUSTED!");
+                //alert("BUSTED!");
                 editPlayerPoints(5, "lose");
             }
         }
@@ -488,7 +496,7 @@ function CardGame ()  {
                 <img src={pCard5} width="185" height="auto" />
             </div>
 
-            <h3>{handResult}</h3>
+            
 
             <div className="game_controls">
                 <button className="control_btn" onClick={dealHand}>Deal</button>
@@ -496,7 +504,7 @@ function CardGame ()  {
                 <button className="control_btn" onClick={handleHit}>Hit</button>
                 <div className="divider" />
                 <button className="control_btn" onClick={handleStay}>Stay</button>
-                
+                <h3>{handResult}</h3>
             </div>
         </div>
     )
