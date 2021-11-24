@@ -175,13 +175,13 @@ function CardGame ()  {
         var suits = JSON.parse(ss.getItem('cardArray'));
         var thisDeal = parseInt(ss.getItem('currCard'));
         if (thisDeal < 610){
-            //dealPlayerCard("Hearts", "ACE"); //testing cards
+            //dealPlayerCard("Clubs", "QUEEN"); //testing cards
             dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
             thisDeal++;
             //dealDealerCard("Hearts", "2"); testing cards
             dealDealerCard(suits[thisDeal][0], suits[thisDeal][1]);
             thisDeal++;
-            //dealPlayerCard("Hearts", "JACK"); //testing cards
+            //dealPlayerCard("Clubs", "3"); //testing cards
             dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
             thisDeal++;
             //dealDealerCard("Hearts", "2"); testing cards
