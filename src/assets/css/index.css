@@ -184,3 +184,8 @@ html a {
 .dealer_cards {
   align-content: center;
 }
+
+.craigNameHeader {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}

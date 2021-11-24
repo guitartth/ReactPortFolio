@@ -4,7 +4,7 @@ import React from 'react'
 const Header = () => {
     return (
         <header>
-            <h1>Craig.</h1>
+            <img src="/assets/imgs/CraigHeader.png" height="150px" className="craig_header_img" alt="Craig Cartoon Face"></img>
             <nav id="nav">
                 <a href="google.com">Me</a>
                 <a href="google.com">Projects</a>
