@@ -11,19 +11,25 @@ var ss = window.sessionStorage; // to store dealerTotal
 ss.setItem('dT', 0); // initializes dealerTotal to 0
 ss.setItem('pT', 0); // initializes playerTotal to 0
 ss.setItem('currCard', 0); // initializes current card in array to 0
-ss.setItem('playersPoints', 0);
-ss.setItem('dCC', 1);
-ss.setItem('pCC', 1);
+ss.setItem('playersPoints', 0); // initializes player points to 0 at start
+ss.setItem('dCC', 1); // dealer - cards in hand count
+ss.setItem('pCC', 1); // player - cards in hand count
 ss.setItem('dAce', 0); // dealer - 0 for no ace in hand, 1 for yes, 2 for used
 ss.setItem('pAce', 0); // player - 0 for no ace in hand, 1 for yes, 2 for used
 ss.setItem('start', 1); // flag for start of game for clearing cards
 
 // full blackjack game
 function CardGame ()  {
+    ss.setItem('dDC', ""); // stores image string of dealers down card
+     
+    var drawURL = "https://deckofcardsapi.com/api/deck/"; // base url to draw a card
+
+    // state for high score
     const [highScore, setHScore] = useState(() => {
         return JSON.parse(HighScore.score);
     });
 
+    // states for player points and hand result text
     const [pPoints, setpPoints] = useState(0);
     const [handResult, setResult] = useState();
 
@@ -31,6 +37,7 @@ function CardGame ()  {
         setResult(result);
     }
 
+    // states for card image srcs
     const [dCard1, setDCard1] = useState();
     const [dCard2, setDCard2] = useState();
     const [dCard3, setDCard3] = useState();
@@ -83,11 +90,6 @@ function CardGame ()  {
         setPCard5(path);
     }
 
-    ss.setItem('dDC', ""); // stores image string of dealers down card
-     
-    var drawURL = "https://deckofcardsapi.com/api/deck/"; // base url to draw a card
-    //var playerPoints = 0; // holds points for current player
-
     // gives another card to player
     const handleHit = () => {
         if (parseInt(ss.getItem('pT')) < 21 && parseInt(ss.getItem('pCC')) < 6 || parseInt(ss.getItem('pAce')) > 0){
@@ -136,11 +138,12 @@ function CardGame ()  {
         }
     }
 
-    // turns over dealer card with images
+    // turns over dealer down card with image
     const showDealerCard = (suit, value) => {
         setDealCard1("/assets/imgs/cards/" + suit + "_" + value + "_black.png");
     }
 
+    // gets card from array and sends to player/dealer
     const dealCard = (person) => {
         var suits = JSON.parse(ss.getItem('cardArray'));
         var thisDeal = parseInt(ss.getItem('currCard'));
@@ -155,7 +158,7 @@ function CardGame ()  {
         //useSound(dlCrdSnd, {volume: 0.9});
     }
 
-    // deals first 4 cards, checks player blackjack
+    // deals first 4 cards, checks blackjacks
     const dealHand = () => {
         if (parseInt(ss.getItem('start')) !== 1){
             resetCardImages();
@@ -166,17 +169,17 @@ function CardGame ()  {
         var suits = JSON.parse(ss.getItem('cardArray'));
         var thisDeal = parseInt(ss.getItem('currCard'));
         if (thisDeal < 610){
-            dealPlayerCard("Hearts", "ACE");
-            //dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
+            //dealPlayerCard("Hearts", "ACE"); testing cards
+            dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
             thisDeal++;
-            dealDealerCard("Hearts", "2");
-            //dealDealerCard(suits[thisDeal][0], suits[thisDeal][1]);
+            //dealDealerCard("Hearts", "2"); testing cards
+            dealDealerCard(suits[thisDeal][0], suits[thisDeal][1]);
             thisDeal++;
-            dealPlayerCard("Hearts", "ACE");
-            //dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
+            //dealPlayerCard("Hearts", "ACE"); testing cards
+            dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
             thisDeal++;
-            dealDealerCard("Hearts", "2");
-            //dealDealerCard(suits[thisDeal][0], suits[thisDeal][1]);
+            //dealDealerCard("Hearts", "2"); testing cards
+            dealDealerCard(suits[thisDeal][0], suits[thisDeal][1]);
             ss.setItem('currCard', (thisDeal + 1));
         }
         if (checkBlackJack(parseInt(ss.getItem('pT')))) {
