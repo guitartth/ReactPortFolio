@@ -120,6 +120,9 @@ function CardGame ()  {
 
     // ends player turn and begins dealer turn
     const handleStay = () => {
+        document.getElementById("plyr_hit_btn").disabled = true;
+        document.getElementById("plyr_stay_btn").disabled = true;
+        document.getElementById("deal_hand_btn").disabled = false;
         if (parseInt(ss.getItem('pT')) > 21 && parseInt(ss.getItem('pAce')) > 0) {
             ss.setItem('pAce', parseInt(ss.getItem('pAce')) - 1);
             ss.setItem('pT', parseInt(ss.getItem('pT')) - 10);
@@ -160,6 +163,9 @@ function CardGame ()  {
 
     // deals first 4 cards, checks blackjacks
     const dealHand = () => {
+        document.getElementById("plyr_hit_btn").disabled = false;
+        document.getElementById("plyr_stay_btn").disabled = false;
+        document.getElementById("deal_hand_btn").disabled = true;
         if (parseInt(ss.getItem('start')) !== 1){
             resetCardImages();
         }
@@ -169,13 +175,13 @@ function CardGame ()  {
         var suits = JSON.parse(ss.getItem('cardArray'));
         var thisDeal = parseInt(ss.getItem('currCard'));
         if (thisDeal < 610){
-            //dealPlayerCard("Hearts", "ACE"); testing cards
+            //dealPlayerCard("Hearts", "ACE"); //testing cards
             dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
             thisDeal++;
             //dealDealerCard("Hearts", "2"); testing cards
             dealDealerCard(suits[thisDeal][0], suits[thisDeal][1]);
             thisDeal++;
-            //dealPlayerCard("Hearts", "ACE"); testing cards
+            //dealPlayerCard("Hearts", "JACK"); //testing cards
             dealPlayerCard(suits[thisDeal][0], suits[thisDeal][1]);
             thisDeal++;
             //dealDealerCard("Hearts", "2"); testing cards
@@ -202,12 +208,18 @@ function CardGame ()  {
             setPoints(currPoints);
             isHighScore(currPoints);
             resetHand();
+            document.getElementById("plyr_hit_btn").disabled = true;
+            document.getElementById("plyr_stay_btn").disabled = true;
+            document.getElementById("deal_hand_btn").disabled = false;
         }
         // subtract points
         else {
             currPoints -= points;
             setPoints(currPoints);
             resetHand();
+            document.getElementById("plyr_hit_btn").disabled = true;
+            document.getElementById("plyr_stay_btn").disabled = true;
+            document.getElementById("deal_hand_btn").disabled = false;
         }
     }
 
@@ -416,29 +428,29 @@ function CardGame ()  {
             </div>
             
             <div className="dealer_cards">
-                <img src={dCard1} width="185" height="auto" />
-                <img src={dCard2} width="185" height="auto" />
-                <img src={dCard3} width="185" height="auto" />
-                <img src={dCard4} width="185" height="auto" />
-                <img src={dCard5} width="185" height="auto" />
+                <img id="dlr_crd_img_1" src={dCard1} width="185" height="auto" />
+                <img id="dlr_crd_img_2" src={dCard2} width="185" height="auto" />
+                <img id="dlr_crd_img_3" src={dCard3} width="185" height="auto" />
+                <img id="dlr_crd_img_4" src={dCard4} width="185" height="auto" />
+                <img id="dlr_crd_img_5" src={dCard5} width="185" height="auto" />
             </div>
             
             <div className="player_cards">
-                <img src={pCard1} width="185" height="auto" />
-                <img src={pCard2} width="185" height="auto" />
-                <img src={pCard3} width="185" height="auto" />
-                <img src={pCard4} width="185" height="auto" />
-                <img src={pCard5} width="185" height="auto" />
+                <img id="plyr_crd_img_1" src={pCard1} width="185" height="auto" />
+                <img id="plyr_crd_img_2" src={pCard2} width="185" height="auto" />
+                <img id="plyr_crd_img_3" src={pCard3} width="185" height="auto" />
+                <img id="plyr_crd_img_4" src={pCard4} width="185" height="auto" />
+                <img id="plyr_crd_img_5" src={pCard5} width="185" height="auto" />
             </div>
 
             
 
             <div className="game_controls">
-                <button className="control_btn" onClick={dealHand}>Deal</button>
+                <button className="control_btn" id="deal_hand_btn" onClick={dealHand}>Deal</button>
                 <div className="divider" />
-                <button className="control_btn" onClick={handleHit}>Hit</button>
+                <button className="control_btn" id="plyr_hit_btn" onClick={handleHit}>Hit</button>
                 <div className="divider" />
-                <button className="control_btn" onClick={handleStay}>Stay</button>
+                <button className="control_btn" id="plyr_stay_btn" onClick={handleStay}>Stay</button>
                 <h3>{handResult}</h3>
             </div>
         </div>
