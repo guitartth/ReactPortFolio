@@ -181,11 +181,7 @@ html a {
   display: inline-block;
 }
 
-.dealer_cards {
-  align-content: center;
+.nav_btn {
+  text-align: center;
 }
 
-.craigNameHeader {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-}
