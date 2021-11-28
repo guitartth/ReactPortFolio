@@ -4,12 +4,12 @@ import React from 'react'
 const Header = () => {
     return (
         <header>
-            <img src="/assets/imgs/CraigHeader.png" height="150px" className="craig_header_img" alt="Craig Cartoon Face"></img>
+            <img src="/assets/imgs/CraigHeader.png" height="200px" className="craig_header_img" alt="Craig Cartoon Face"></img>
             <nav id="nav">
-                <button className="nav_btn" id="me_nav_btn" disabled="disabled">m<br/>e</button>
-                <button className="nav_btn" id="projects_nav_btn" disabled="disabled">p<br/>r<br/>o<br/>j<br/>e<br/>c<br/>t<br/>s</button>
-                <button className="nav_btn" id="find_me_nav_btn" disabled="disabled">f<br/>i<br/>n<br/>d<br/> <br/>m<br/>e</button>
-                <button className="nav_btn" id="contact_nav_btn" disabled="disabled">c<br/>o<br/>n<br/>t<br/>a<br/>c<br/>t</button>
+                <button className="nav_btn" id="me_nav_btn" disabled="disabled">M<br/>E</button>
+                <button className="nav_btn" id="projects_nav_btn" disabled="disabled">P<br/>R<br/>O<br/>J<br/>E<br/>C<br/>T<br/>S</button>
+                <button className="nav_btn" id="find_me_nav_btn" disabled="disabled">F<br/>I<br/>N<br/>D<br/> <br/>M<br/>E</button>
+                <button className="nav_btn" id="contact_nav_btn" disabled="disabled">C<br/>O<br/>N<br/>T<br/>A<br/>C<br/>T</button>
             </nav>
         </header>
     )
