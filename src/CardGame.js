@@ -263,13 +263,13 @@ function CardGame ()  {
 
     // resets card images to empty
     const resetCardImages = () => {
-        setPlayCard1(" ");
-        setPlayCard2(" ");
+        setPlayCard1("/assets/imgs/cards/blankcard.png");
+        setPlayCard2("/assets/imgs/cards/blankcard.png");
         setPlayCard3(" ");
         setPlayCard4(" ");
         setPlayCard5(" ");
         setDealCard1("/assets/imgs/cards/cardback.png");
-        setDealCard2(" ");
+        setDealCard2("/assets/imgs/cards/blankcard.png");
         setDealCard3(" ");
         setDealCard4(" ");
         setDealCard5(" ");
@@ -425,6 +425,7 @@ function CardGame ()  {
             <div className="game_score">
                 <h5>High Score: {highScore}</h5>
                 <h5>Player Score: {pPoints}</h5>
+                <h1>{handResult}</h1>
             </div>
             
             <div className="dealer_cards">
@@ -435,6 +436,8 @@ function CardGame ()  {
                 <img id="dlr_crd_img_5" src={dCard5} width="185" height="auto" />
             </div>
             
+            
+
             <div className="player_cards">
                 <img id="plyr_crd_img_1" src={pCard1} width="185" height="auto" />
                 <img id="plyr_crd_img_2" src={pCard2} width="185" height="auto" />
@@ -443,15 +446,13 @@ function CardGame ()  {
                 <img id="plyr_crd_img_5" src={pCard5} width="185" height="auto" />
             </div>
 
-            
-
             <div className="game_controls">
+                
                 <button className="control_btn" id="deal_hand_btn" onClick={dealHand}>Deal</button>
                 <div className="divider" />
                 <button className="control_btn" id="plyr_hit_btn" onClick={handleHit}>Hit</button>
                 <div className="divider" />
                 <button className="control_btn" id="plyr_stay_btn" onClick={handleStay}>Stay</button>
-                <h3>{handResult}</h3>
             </div>
         </div>
     )
