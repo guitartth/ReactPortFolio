@@ -263,16 +263,16 @@ function CardGame ()  {
 
     // resets card images to empty
     const resetCardImages = () => {
-        setPlayCard1("/assets/imgs/cards/blankcard.png");
-        setPlayCard2("/assets/imgs/cards/blankcard.png");
-        setPlayCard3("/assets/imgs/cards/blankcard.png");
-        setPlayCard4("/assets/imgs/cards/blankcard.png");
-        setPlayCard5("/assets/imgs/cards/blankcard.png");
+        setPlayCard1(" ");
+        setPlayCard2(" ");
+        setPlayCard3(" ");
+        setPlayCard4(" ");
+        setPlayCard5(" ");
         setDealCard1("/assets/imgs/cards/cardback.png");
-        setDealCard2("/assets/imgs/cards/blankcard.png");
-        setDealCard3("/assets/imgs/cards/blankcard.png");
-        setDealCard4("/assets/imgs/cards/blankcard.png");
-        setDealCard5("/assets/imgs/cards/blankcard.png");
+        setDealCard2(" ");
+        setDealCard3(" ");
+        setDealCard4(" ");
+        setDealCard5(" ");
     }
 
     // sends next card to player, updates their hand total and builds card image url
