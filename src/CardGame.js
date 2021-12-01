@@ -429,21 +429,21 @@ function CardGame ()  {
             </div>
             
             <div className="dealer_cards">
-                <img id="dlr_crd_img_1" src={dCard1} width="185" height="auto" />
-                <img id="dlr_crd_img_2" src={dCard2} width="185" height="auto" />
-                <img id="dlr_crd_img_3" src={dCard3} width="185" height="auto" />
-                <img id="dlr_crd_img_4" src={dCard4} width="185" height="auto" />
-                <img id="dlr_crd_img_5" src={dCard5} width="185" height="auto" />
+                <img id="dlr_crd_img_1" src={dCard1}  />
+                <img id="dlr_crd_img_2" src={dCard2}  />
+                <img id="dlr_crd_img_3" src={dCard3}  />
+                <img id="dlr_crd_img_4" src={dCard4}  />
+                <img id="dlr_crd_img_5" src={dCard5}  />
             </div>
             
             
 
             <div className="player_cards">
-                <img id="plyr_crd_img_1" src={pCard1} width="185" height="auto" />
-                <img id="plyr_crd_img_2" src={pCard2} width="185" height="auto" />
-                <img id="plyr_crd_img_3" src={pCard3} width="185" height="auto" />
-                <img id="plyr_crd_img_4" src={pCard4} width="185" height="auto" />
-                <img id="plyr_crd_img_5" src={pCard5} width="185" height="auto" />
+                <img id="plyr_crd_img_1" src={pCard1}  />
+                <img id="plyr_crd_img_2" src={pCard2}  />
+                <img id="plyr_crd_img_3" src={pCard3}  />
+                <img id="plyr_crd_img_4" src={pCard4}  />
+                <img id="plyr_crd_img_5" src={pCard5}  />
             </div>
 
             <div className="game_controls">
