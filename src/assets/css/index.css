@@ -217,6 +217,10 @@ footer {
   gap: 1.5em;
 }
 
+.project-row-reverse {
+  flex-direction: row-reverse;
+}
+
 .project-row p {
   flex: 1;
   font-size: 1.2rem;
@@ -230,6 +234,54 @@ footer {
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   object-fit: cover;
+}
+
+/*//////////////////////////////////
+     SUGGESTS CSS
+//////////////////////////////////*/
+.suggests-heading {
+  font-size: 2rem;
+}
+
+.suggest-block {
+  clear: both;
+  margin-bottom: 1.25em;
+}
+
+.suggest-block h3 {
+  margin-bottom: 0.5em;
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.suggest-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.suggest-row > *:first-child {
+  justify-self: end;
+}
+
+.suggest-row-reverse > *:first-child {
+  justify-self: start;
+  order: 2;
+}
+
+.suggest-row-reverse > *:last-child {
+  order: 1;
+}
+
+.suggest-row p {
+  font-size: 1.5rem;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.suggest-row-reverse p {
+  text-align: right;
 }
 
 .project-photo-placeholder {
@@ -440,8 +492,25 @@ footer {
     margin: 0 auto 1em;
   }
 
-  .project-row {
+  .project-row,
+  .project-row-reverse {
     flex-direction: column;
+  }
+
+  .suggest-row,
+  .suggest-row-reverse {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .suggest-row-reverse > *:first-child,
+  .suggest-row-reverse > *:last-child {
+    order: initial;
+  }
+
+  .suggest-row p,
+  .suggest-row-reverse p {
+    text-align: center;
   }
 
   .project-photo {
