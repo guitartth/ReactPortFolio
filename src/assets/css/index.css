@@ -121,6 +121,77 @@ footer {
   clear: both;
 }
 
+/*//////////////////////////////////
+     CONTACT FORM CSS
+//////////////////////////////////*/
+.page-content p.contact-intro {
+  text-align: center;
+  font-size: 1.25rem;
+}
+
+.contact-reasons {
+  list-style: none;
+  text-align: center;
+  margin: 0.5em 0 1.5em;
+  padding: 0;
+}
+
+.contact-reasons li {
+  margin-bottom: 0.3em;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 1.5em auto 0;
+}
+
+.contact-form label {
+  font-size: 1.2rem;
+  margin-bottom: 0.25em;
+}
+
+.contact-form input,
+.contact-form textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5em;
+  margin-bottom: 1em;
+  border: 1px solid var(--backgroundDarkGray);
+  border-radius: 4px;
+  background-color: #fff;
+  color: #000;
+  resize: vertical;
+}
+
+.contact-form button {
+  align-self: center;
+  border: 0;
+  border-radius: 4px;
+  background-color: var(--backgroundDarkGray);
+  color: white;
+  cursor: pointer;
+}
+
+.contact-form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.contact-status {
+  margin-top: 1em;
+  font-size: 1.1rem;
+}
+
+.contact-status-success {
+  text-align: center;
+}
+
+.contact-status-error {
+  color: #7a1f1f;
+}
+
 .bio-photo {
   width: 260px;
   height: auto;
