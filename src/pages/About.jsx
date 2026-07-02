@@ -19,7 +19,7 @@ const About = () => {
                     className="bio-photo bio-photo-right bio-photo-tight"
                 />
                 <p>These days I work as a Technical Engineer in Las Vegas, doing elevated technical support, designing and developing custom features for clients, and database work, while expanding into data engineering. I live here with my wife and two kids, ages eight and three. Free time goes to my family, a new musical project that is so far unreleased, Magic the Gathering, and cheering on the Raiders, Huskers, and Golden Knights. Nebraska kid, Hollywood detour, life on the road, and now the desert.</p>
-                <p>Every stop along the way shaped how I think and how I work, and I bring all of it to whatever I am doing next.</p>
+                <p className="bio-closing">Every stop along the way shaped how I think and how I work, and I bring all of it to whatever I am doing next.</p>
                 <img
                     src="/assets/imgs/about/CraigWedding.jpg"
                     alt="Craig and his wife on their wedding day"

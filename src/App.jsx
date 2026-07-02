@@ -5,8 +5,8 @@ import Footer from './Footer';
 import Home from './pages/Home';
 import About from './pages/About';
 import Projects from './pages/Projects';
-import FindMe from './pages/FindMe';
 import Contact from './pages/Contact';
+import Blackjack from './pages/Blackjack';
 
 function App() {
   return (
@@ -16,8 +16,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<Projects />} />
-        <Route path="/find-me" element={<FindMe />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/blackjack" element={<Blackjack />} />
       </Routes>
       <Footer />
     </div>

@@ -102,6 +102,12 @@ footer {
   text-align: center;
 }
 
+.blackjack-heading {
+  width: 100%;
+  text-align: center;
+  padding: 0.75em 0;
+}
+
 .page-content {
   max-width: 700px;
   margin: 1.5em auto 0;
@@ -192,6 +198,43 @@ footer {
   color: #7a1f1f;
 }
 
+/*//////////////////////////////////
+     PROJECTS CSS
+//////////////////////////////////*/
+.project-block {
+  clear: both;
+  margin-bottom: 3em;
+}
+
+.project-block h3 {
+  margin-bottom: 0.5em;
+  font-size: 1.6rem;
+}
+
+.project-photo {
+  float: left;
+  width: 280px;
+  height: 180px;
+  margin-right: 1.5em;
+  margin-bottom: 1em;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  object-fit: cover;
+}
+
+.project-photo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 2px dashed var(--backgroundDarkGray);
+  color: var(--backgroundDarkGray);
+  background-color: rgba(0, 0, 0, 0.05);
+  box-shadow: none;
+  font-size: 1rem;
+  padding: 1em;
+}
+
 .bio-photo {
   width: 260px;
   height: auto;
@@ -214,7 +257,7 @@ footer {
   margin-right: auto;
 }
 
-.page-content p:last-child {
+.page-content p.bio-closing {
   clear: both;
 }
 
@@ -357,6 +400,11 @@ footer {
   .bio-photo {
     width: 180px;
   }
+
+  .project-photo {
+    width: 180px;
+    height: 130px;
+  }
 }
 
 /*//////////////////////////////////
@@ -378,6 +426,16 @@ footer {
     width: 100%;
     max-width: 320px;
     display: block;
+    margin: 0 auto 1em;
+  }
+
+  .project-photo {
+    float: none;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    display: flex;
     margin: 0 auto 1em;
   }
 }
