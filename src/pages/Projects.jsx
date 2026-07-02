@@ -14,6 +14,12 @@ const projects = [
         image: '/assets/imgs/projects/MyMagicBinder.JPG',
         url: 'https://www.mymagicbinder.com',
     },
+    {
+        name: 'Candidate Voter Tracker',
+        blurb: 'Built a voter research tool for a candidate to optimize his canvasing and outreach. Handles an extremely large database of voting records and allowed him to filter voters to his needs. (Fake data in screenshot)',
+        image: '/assets/imgs/projects/Voters.jpg',
+        url: null,
+    },
 ]
 
 const Projects = () => {
