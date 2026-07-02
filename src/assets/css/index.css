@@ -211,12 +211,22 @@ footer {
   font-size: 1.6rem;
 }
 
+.project-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5em;
+}
+
+.project-row p {
+  flex: 1;
+  font-size: 1.2rem;
+  margin-bottom: 0;
+}
+
 .project-photo {
-  float: left;
+  flex: 0 0 280px;
   width: 280px;
   height: 180px;
-  margin-right: 1.5em;
-  margin-bottom: 1em;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   object-fit: cover;
@@ -402,6 +412,7 @@ footer {
   }
 
   .project-photo {
+    flex: 0 0 180px;
     width: 180px;
     height: 130px;
   }
@@ -429,8 +440,12 @@ footer {
     margin: 0 auto 1em;
   }
 
+  .project-row {
+    flex-direction: column;
+  }
+
   .project-photo {
-    float: none;
+    flex: none;
     width: 100%;
     max-width: 320px;
     height: auto;

@@ -4,9 +4,15 @@ import { Link } from 'react-router-dom'
 const projects = [
     {
         name: 'Blackjack',
-        blurb: "I built this blackjack game as something fun for visitors to play while the site itself wasn't finished yet. Now that the site is done, the game has moved off the homepage and lives on its own page instead.",
+        blurb: "Built as a holding screen while I finished this website. Now that the site is done, it lives here. Play a few hands and see if you can beat my high score of 105!",
         image: '/assets/imgs/projects/Blackjack.JPG',
         url: '/blackjack',
+    },
+    {
+        name: 'My Magic Binder',
+        blurb: 'A web app to visualize and catalog your entire Magic: The Gathering collection, letting you view your collection as if all your cards were sitting in binders. Import your collection, request trades with other users, find cards you need from local players, and compare your deck lists to your collection.',
+        image: '/assets/imgs/projects/MyMagicBinder.JPG',
+        url: 'https://www.mymagicbinder.com',
     },
 ]
 
@@ -38,8 +44,10 @@ const Projects = () => {
                     return (
                         <section className="project-block" key={project.name}>
                             <h3>{project.name}</h3>
-                            {linkedPhoto}
-                            <p>{project.blurb}</p>
+                            <div className="project-row">
+                                {linkedPhoto}
+                                <p>{project.blurb}</p>
+                            </div>
                         </section>
                     )
                 })}
