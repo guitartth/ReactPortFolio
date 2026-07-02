@@ -1,12 +1,14 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 
 const navLinkClass = ({ isActive }) => 'nav_btn' + (isActive ? ' nav_btn_active' : '')
 
 const Header = () => {
     return (
         <header>
-            <img src="/assets/imgs/CraigHeader.png" height="200px" className="craig_header_img" alt="Craig Cartoon Face"></img>
+            <Link to="/">
+                <img src="/assets/imgs/CraigHeader.png" height="200px" className="craig_header_img" alt="Craig Cartoon Face"></img>
+            </Link>
             <div id="nav_wrap">
             <nav id="nav">
                 <NavLink to="/about" className={navLinkClass} id="me_nav_btn">A<br/>B<br/>O<br/>U<br/>T<br/> <br/>M<br/>E</NavLink>
