@@ -9,6 +9,12 @@ const projects = [
         url: '/blackjack',
     },
     {
+        name: 'Against the Spread',
+        blurb: 'Weekly NFL pool application. Players pick every game of the week against the spread. Players with the most correct choices win. Supports different pool entry fees and payout schedules.',
+        image: '/assets/imgs/projects/ATS.JPG',
+        url: 'https://ats-weekly.vercel.app/',
+    },
+    {
         name: 'My Magic Binder',
         blurb: 'A web app to visualize and catalog your entire Magic: The Gathering collection, letting you view your collection as if all your cards were sitting in binders. Import your collection, request trades with other users, find cards you need from local players, and compare your deck lists to your collection.',
         image: '/assets/imgs/projects/MyMagicBinder.JPG',
